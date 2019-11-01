@@ -7,7 +7,15 @@ import (
 )
 
 func printPersonData(name string, age int) {
-	fmt.Printf("%s is %d years old.", name, age)
+	fmt.Printf("%s is %d years old.\n", name, age)
+}
+
+func sum(n, m int) int {
+	return n + m
+}
+
+func printSum(n, m int) {
+	fmt.Printf("Sum: %d + %d = %d", n, m, sum(n, m))
 }
 
 func main() {
@@ -27,4 +35,5 @@ func main() {
 	}
 
 	printPersonData(name, ageInt)
+	printSum(40, 20)
 }
