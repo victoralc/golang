@@ -9,9 +9,7 @@ import (
 func main() {
 	words := os.Args[1:]
 
-	frequency := frequencyOfFirstLetterIn(words)
-
-	report(frequency)
+	report(frequencyOfFirstLetterIn(words))
 }
 
 func frequencyOfFirstLetterIn(words []string) map[string]int {
