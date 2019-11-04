@@ -36,18 +36,18 @@ func quicksort(numbers []int) []int {
 
 	n = append(n[:indexPivot], n[indexPivot+1:]...)
 
-	shorters, highers := partition(n, pivot)
+	shortens, highers := partition(n, pivot)
 
-	return append(append(quicksort(shorters), pivot), quicksort(highers)...)
+	return append(append(quicksort(shortens), pivot), quicksort(highers)...)
 }
 
-func partition(numbers []int, pivot int) (shorters []int, highers []int) {
+func partition(numbers []int, pivot int) (shortens []int, highers []int) {
 	for _, n := range numbers {
 		if n <= pivot {
-			shorters = append(shorters, n)
+			shortens = append(shortens, n)
 		} else {
 			highers = append(highers, n)
 		}
 	}
-	return shorters, highers
+	return shortens, highers
 }
