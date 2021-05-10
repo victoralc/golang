@@ -4,9 +4,14 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
 
+const delay = 5
+const monitoramentos = 5
+
 func main() {
+	//showNames()
 	greetings()
 	for  {
 		showMenu()
@@ -57,21 +62,33 @@ func getNameAndAge() (string, int) {
 }
 
 func initMonitoring() {
-	fmt.Println("Monitorando aplicacao")
-	site := "https://random-status-code.herokuapp.com/"
-	resp, _ := http.Get(site)
-
+	fmt.Println("Monitoring applications...")
 	// Arrays with fixed length
-	var sites [4]string
-	sites[0] = "https://random-status-code.herokuapp.com/"
-	sites[1] = "https://www.alura.com.br/"
-	sites[2] = "https://www.caelum.com.br/"
+	sites := []string {"https://random-status-code.herokuapp.com/", "https://www.alura.com.br/", "https://www.caelum.com.br/"}
 
-	fmt.Println(sites)
+	for i := 0; i < monitoramentos; i++ {
+		for i, site := range sites {
+			fmt.Println("Monitoring site ", i, ":", site)
+			checkSite(site)
+		}
+		time.Sleep(delay * time.Second)
+	}
 
+}
+
+func checkSite(site string) {
+	resp, _ := http.Get(site)
 	if resp.StatusCode == 200 {
 		fmt.Println("Site", site, "foi carregado com sucesso!")
 	} else {
 		fmt.Println("Site", site, "foi carregado com problemas", "Status code", resp.StatusCode)
 	}
+}
+
+func showNames(){
+	names := []string {"Victor", "Livia", "Maria", "Joao"}
+	names = append(names, "Felipe")
+	fmt.Println(names)
+	fmt.Println(len(names))
+	fmt.Println(cap(names)) // double the initial capacity
 }
