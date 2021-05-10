@@ -8,9 +8,11 @@ import (
 
 func main() {
 	greetings()
-	showMenu()
-	command := readCommand()
-	executeCommand(command)
+	for  {
+		showMenu()
+		command := readCommand()
+		executeCommand(command)
+	}
 }
 
 func executeCommand(comando int) {
@@ -19,7 +21,7 @@ func executeCommand(comando int) {
 		initMonitoring()
 	case 2:
 		fmt.Println("Logando aplicacao")
-	case 3:
+	case 0:
 		fmt.Println("Saindo da aplicacao")
 		os.Exit(0)
 	default:
@@ -56,7 +58,20 @@ func getNameAndAge() (string, int) {
 
 func initMonitoring() {
 	fmt.Println("Monitorando aplicacao")
-	site := "https://www.alura.com.br"
+	site := "https://random-status-code.herokuapp.com/"
 	resp, _ := http.Get(site)
-	fmt.Println(resp)
+
+	// Arrays with fixed length
+	var sites [4]string
+	sites[0] = "https://random-status-code.herokuapp.com/"
+	sites[1] = "https://www.alura.com.br/"
+	sites[2] = "https://www.caelum.com.br/"
+
+	fmt.Println(sites)
+
+	if resp.StatusCode == 200 {
+		fmt.Println("Site", site, "foi carregado com sucesso!")
+	} else {
+		fmt.Println("Site", site, "foi carregado com problemas", "Status code", resp.StatusCode)
+	}
 }
