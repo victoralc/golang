@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -11,7 +14,7 @@ const delay = 5
 const monitoramentos = 5
 
 func main() {
-	//showNames()
+	showNames()
 	greetings()
 	for  {
 		showMenu()
@@ -63,8 +66,8 @@ func getNameAndAge() (string, int) {
 
 func initMonitoring() {
 	fmt.Println("Monitoring applications...")
-	// Arrays with fixed length
-	sites := []string {"https://random-status-code.herokuapp.com/", "https://www.alura.com.br/", "https://www.caelum.com.br/"}
+
+	sites := readSitesFromFile()
 
 	for i := 0; i < monitoramentos; i++ {
 		for i, site := range sites {
@@ -73,11 +76,36 @@ func initMonitoring() {
 		}
 		time.Sleep(delay * time.Second)
 	}
+}
 
+func readSitesFromFile() []string {
+	var sites []string
+	file, err := os.Open("sites.txt")
+	if err != nil {
+		fmt.Println("An error has occurred during the file reading")
+	}
+
+	fileReader := bufio.NewReader(file)
+	for  {
+		line, err := fileReader.ReadString('\n')
+		line = strings.TrimSpace(line)
+
+		sites = append(sites, line)
+
+		if err == io.EOF {
+			break
+		}
+	}
+	file.Close()
+	return sites
 }
 
 func checkSite(site string) {
-	resp, _ := http.Get(site)
+	fmt.Println("checking website:", site)
+	resp, err := http.Get(site)
+	if err != nil {
+		fmt.Println("An error has occurred during the get request to web site:", site)
+	}
 	if resp.StatusCode == 200 {
 		fmt.Println("Site", site, "foi carregado com sucesso!")
 	} else {
@@ -88,7 +116,6 @@ func checkSite(site string) {
 func showNames(){
 	names := []string {"Victor", "Livia", "Maria", "Joao"}
 	names = append(names, "Felipe")
-	fmt.Println(names)
 	fmt.Println(len(names))
 	fmt.Println(cap(names)) // double the initial capacity
 }
