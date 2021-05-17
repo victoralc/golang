@@ -4,17 +4,18 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
 const delay = 5
-const monitoramentos = 5
+const monitoring = 5
 
 func main() {
-	showNames()
 	greetings()
 	for  {
 		showMenu()
@@ -23,30 +24,32 @@ func main() {
 	}
 }
 
-func executeCommand(comando int) {
-	switch comando {
+func executeCommand(command int) {
+	switch command {
 	case 1:
 		initMonitoring()
 	case 2:
-		fmt.Println("Logando aplicacao")
+		fmt.Println("Show logs")
+		printLogs()
 	case 0:
-		fmt.Println("Saindo da aplicacao")
+		fmt.Println("Quit application")
 		os.Exit(0)
 	default:
-		fmt.Println("Nao conheco esse comando")
+		fmt.Println("Command not found")
+		os.Exit(-1)
 	}
 }
 
 func showMenu() {
-	fmt.Println("1 - Iniciar Monitoramento")
-	fmt.Println("2 - Exibir logs")
-	fmt.Println("0 - Sair do Programa")
+	fmt.Println("1 - Initialize Monitoring")
+	fmt.Println("2 - Show logs")
+	fmt.Println("0 - Quit Application")
 }
 
 func readCommand() int {
 	var command int
 	fmt.Scan(&command)
-	fmt.Println("Comando escolhido:", command)
+	fmt.Println("Command selected:", command)
 	return command
 }
 
@@ -69,7 +72,7 @@ func initMonitoring() {
 
 	sites := readSitesFromFile()
 
-	for i := 0; i < monitoramentos; i++ {
+	for i := 0; i < monitoring; i++ {
 		for i, site := range sites {
 			fmt.Println("Monitoring site ", i, ":", site)
 			checkSite(site)
@@ -107,15 +110,32 @@ func checkSite(site string) {
 		fmt.Println("An error has occurred during the get request to web site:", site)
 	}
 	if resp.StatusCode == 200 {
-		fmt.Println("Site", site, "foi carregado com sucesso!")
+		fmt.Println("Site", site, "is alive. Status code:", resp.StatusCode)
+		createLogs(site, true)
 	} else {
-		fmt.Println("Site", site, "foi carregado com problemas", "Status code", resp.StatusCode)
+		fmt.Println("Site", site, "cannot be accessed.", "Status code:", resp.StatusCode)
+		createLogs(site, false)
 	}
 }
 
-func showNames(){
-	names := []string {"Victor", "Livia", "Maria", "Joao"}
-	names = append(names, "Felipe")
-	fmt.Println(len(names))
-	fmt.Println(cap(names)) // double the initial capacity
+func createLogs(site string, status bool)  {
+
+	file, err := os.OpenFile("logs.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	file.WriteString(time.Now().Format("02/01/2006 15:04:05") + " - " + site + "- online: " + strconv.FormatBool(status) + "\n")
+	file.Close()
+}
+
+func printLogs()  {
+	file, err := ioutil.ReadFile("logs.txt")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(string(file))
 }
