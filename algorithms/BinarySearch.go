@@ -1,5 +1,6 @@
 package main
 
-func binarySearch()  {
+func binarySearch(list []int, target int)  {
+
 
 }
