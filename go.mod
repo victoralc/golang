@@ -1,3 +1,3 @@
-module example.com/hello
+module victor/golang
 
 go 1.14
