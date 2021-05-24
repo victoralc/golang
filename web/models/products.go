@@ -1,6 +1,7 @@
 package models
 
 import (
+	"log"
 	"victor/golang/web/db"
 )
 
@@ -40,4 +41,17 @@ func SelectProducts() []Product {
 	}
 	defer db.Close()
 	return products
+}
+
+func Save(product Product) {
+	db := db.ConnectDatabase()
+	insertInDb, err := db.Prepare("INSERT INTO products(name, description, quantity, price) VALUES($1, $2, $3, $4)")
+	if err != nil {
+		log.Println("Cannot create new product")
+	} else {
+		insertInDb.Exec(product.Name, product.Description, product.Quantity, product.Price)
+		log.Println("Product created successfully", product)
+	}
+
+	defer db.Close()
 }
