@@ -2,10 +2,10 @@ package main
 
 import (
 	"net/http"
-	"victor/golang/web/routes"
+	routes2 "victor/golang/web/store/routes"
 )
 
 func main() {
-	routes.LoadRoutes()
+	routes2.LoadRoutes()
 	http.ListenAndServe(":8000", nil)
 }
