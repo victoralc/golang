@@ -1,14 +1,15 @@
 package accounts
 
-import "victor/golang/object-structs/clients"
+import "victor/golang/example_applications/banco/clients"
 
-type SavingsAccount struct {
-	Client clients.Client
-	AccountNumber, AgencyNumber, Operation int
+type Account struct {
+	Holder        clients.AccountHolder
+	AgencyNumber  int
+	AccountNumber int
 	balance       float64
 }
 
-func (a *SavingsAccount) Withdraw(value float64) string {
+func (a *Account) Withdraw(value float64) string {
 	canWithdraw := value > 0 && value <= a.balance
 	if canWithdraw {
 		a.balance -= value
@@ -18,7 +19,7 @@ func (a *SavingsAccount) Withdraw(value float64) string {
 	}
 }
 
-func (a *SavingsAccount) Deposit(value float64) (string, float64){
+func (a *Account) Deposit(value float64) (string, float64){
 	if value > 0 {
 		a.balance += value
 		return "Deposit completed. Your new balance:", a.balance
@@ -27,7 +28,7 @@ func (a *SavingsAccount) Deposit(value float64) (string, float64){
 	}
 }
 
-func (a *SavingsAccount ) Transfer(valueToBeTransferred float64, destinyAccount *Account) bool {
+func (a *Account ) Transfer(valueToBeTransferred float64, destinyAccount *Account) bool {
 	if valueToBeTransferred < a.balance && valueToBeTransferred > 0 {
 		a.balance -= valueToBeTransferred
 		destinyAccount.Deposit(valueToBeTransferred)
@@ -36,8 +37,7 @@ func (a *SavingsAccount ) Transfer(valueToBeTransferred float64, destinyAccount 
 	return false
 }
 
-func (a *SavingsAccount) GetBalance() float64 {
+func (a *Account) GetBalance() float64 {
 	return a.balance
 }
-
 
